@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResuMatch AI - Advanced Resume Matcher & Interview Prep</title>
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Gradients -->
+  <div class="bg-gradient bg-gradient-1"></div>
+  <div class="bg-gradient bg-gradient-2"></div>
+  <div class="bg-gradient bg-gradient-3"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <div class="logo-area">
+        <span class="logo-icon">✨</span>
+        <span class="logo-text">ResuMatch <span class="logo-accent">AI</span></span>
+      </div>
+      <div class="tagline">Placement Readiness & Resume Optimizer</div>
+    </header>
+
+    <main class="grid-layout">
+      <!-- Input Panel (Left Column) -->
+      <section class="card input-card">
+        <h2>Upload & Analyze</h2>
+        <p class="section-desc">Paste the job description and upload your resume to get instant matching insights.</p>
+        
+        <form id="analyzer-form">
+          <div class="form-group">
+            <label for="job-desc">Job Description</label>
+            <textarea id="job-desc" placeholder="Paste the job description here (skills, responsibilities, requirements)..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Resume (PDF only)</label>
+            <div id="drop-zone" class="drop-zone">
+              <span class="drop-icon">📄</span>
+              <span class="drop-text">Drag & drop your PDF resume here or <span class="browse-link">browse</span></span>
+              <input type="file" id="resume-file" accept=".pdf" style="display: none;" required />
+              <div id="file-info" class="file-info hidden">
+                <span class="file-name">filename.pdf</span>
+                <button type="button" id="remove-file-btn" class="btn-icon">✕</button>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" id="submit-btn" class="btn-primary">
+            <span class="btn-text">Analyze Compatibility</span>
+            <span class="loader hidden"></span>
+          </button>
+        </form>
+      </section>
+
+      <!-- Results Panel (Right Column) -->
+      <section id="results-card" class="card results-card empty-state">
+        <!-- Initial Empty State -->
+        <div class="empty-results">
+          <div class="empty-icon">📊</div>
+          <h3>Awaiting Input</h3>
+          <p>Complete the form on the left to see your match score, missing keywords, resume fixes, and personalized interview questions.</p>
+        </div>
+
+        <!-- Real results content (hidden initially) -->
+        <div class="results-content hidden">
+          <!-- Quick Stats Banner -->
+          <div class="score-header-box">
+            <div class="score-circle-wrapper">
+              <svg class="score-ring" width="120" height="120">
+                <circle class="score-ring-bg" stroke="rgba(255,255,255,0.06)" stroke-width="8" fill="transparent" r="50" cx="60" cy="60"/>
+                <circle id="score-ring-progress" class="score-ring-progress" stroke="url(#gradient-accent)" stroke-width="8" stroke-dasharray="314.16" stroke-dashoffset="314.16" fill="transparent" r="50" cx="60" cy="60"/>
+                <defs>
+                  <linearGradient id="gradient-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#8b5cf6" />
+                    <stop offset="100%" stop-color="#06b6d4" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="score-value">
+                <span id="score-num">0</span><span class="percent">%</span>
+              </div>
+            </div>
+            
+            <div class="score-meta">
+              <div class="match-level-badge" id="match-badge">Medium Match</div>
+              <p id="match-summary" class="match-summary">Generating summary...</p>
+            </div>
+          </div>
+
+          <!-- Navigation Tabs -->
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="skills-tab">Skills Match</button>
+            <button class="tab-btn" data-tab="suggestions-tab">Improvement Plan</button>
+            <button class="tab-btn" data-tab="interview-tab">Interview Prep</button>
+          </div>
+
+          <!-- Tab Content Sections -->
+          <div class="tab-contents">
+            <!-- Tab 1: Skills -->
+            <div id="skills-tab" class="tab-pane active">
+              <div class="skills-grid">
+                <div>
+                  <h4>Matched Keywords & Skills</h4>
+                  <div id="matched-skills-container" class="skills-list">
+                    <!-- Dynamic Badges -->
+                  </div>
+                </div>
+                <div>
+                  <h4 class="warning-title">Missing / Weak Keywords</h4>
+                  <div id="missing-skills-container" class="skills-list">
+                    <!-- Dynamic Badges -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2: Suggestions -->
+            <div id="suggestions-tab" class="tab-pane">
+              <h4>Actionable Resume Improvements</h4>
+              <ul id="suggestions-container" class="improvement-list">
+                <!-- Dynamic Items -->
+              </ul>
+            </div>
+
+            <!-- Tab 3: Interview -->
+            <div id="interview-tab" class="tab-pane">
+              <h4>Tailored Interview Questions</h4>
+              <div id="questions-container" class="questions-list">
+                <!-- Dynamic Items -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

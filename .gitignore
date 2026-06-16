@@ -1,0 +1,16 @@
+# Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Environment variables & secrets
+.env
+.env.local
+
+# Test resume PDFs and build artifacts
+*.pdf
+
+# One-off scripts
+generate_resume.py
+generate_mismatched_resume.py
+generate_partial_resume.py
