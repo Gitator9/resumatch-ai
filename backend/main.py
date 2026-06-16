@@ -25,8 +25,10 @@ app.add_middleware(
 )
 
 @app.get("/")
+@app.get("/api")
+@app.get("/api/")
 def read_root():
-    return {"status": "online", "message": "Resume Matcher API is running"}
+    return {"status": "online", "message": "Resume Matcher API is running", "version": "1.0.0"}
 
 @app.post("/api/analyze")
 async def analyze_resume(
@@ -120,11 +122,18 @@ JSON Schema:
         result_data = json.loads(response.text)
         return result_data
         
-    except json.JSONDecodeError as jde:
+    except json.JSONDecodeError:
         # Fallback if AI output is not perfectly structured
         raise HTTPException(status_code=500, detail="AI response could not be parsed as valid JSON. Please try again.")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Gemini API execution error: {str(e)}")
+        err_str = str(e)
+        # Detect Gemini quota / rate-limit errors and return a clear 429
+        if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str or "quota" in err_str.lower():
+            raise HTTPException(
+                status_code=429,
+                detail="The Gemini AI API free quota has been reached. Please wait a few minutes and try again, or upgrade your Gemini API plan at https://aistudio.google.com"
+            )
+        raise HTTPException(status_code=500, detail=f"Gemini API execution error: {err_str}")
 
 if __name__ == "__main__":
     import uvicorn

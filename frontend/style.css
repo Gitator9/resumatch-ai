@@ -627,3 +627,58 @@ h4 {
 .hidden {
   display: none !important;
 }
+
+/* Error Toast Banner */
+.error-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  color: #fca5a5;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+
+.error-toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.error-toast-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.error-toast #error-toast-msg {
+  flex: 1;
+  color: #fca5a5;
+}
+
+.error-toast-close {
+  background: none;
+  border: none;
+  color: #fca5a5;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 4px;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.error-toast-close:hover {
+  opacity: 1;
+}
+

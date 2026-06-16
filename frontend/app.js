@@ -31,6 +31,26 @@ document.addEventListener('DOMContentLoaded', () => {
   let selectedFile = null;
   const CIRCUMFERENCE = 2 * Math.PI * 50; // 314.159
 
+  // --- Error Toast ---
+  const errorToast = document.getElementById('error-toast');
+  const errorToastMsg = document.getElementById('error-toast-msg');
+  const errorToastClose = document.getElementById('error-toast-close');
+
+  function showError(message) {
+    errorToastMsg.textContent = message;
+    errorToast.classList.remove('hidden');
+    errorToast.classList.add('visible');
+    // Auto-hide after 10 seconds
+    setTimeout(() => hideError(), 10000);
+  }
+
+  function hideError() {
+    errorToast.classList.remove('visible');
+    setTimeout(() => errorToast.classList.add('hidden'), 400);
+  }
+
+  errorToastClose.addEventListener('click', hideError);
+
   // 1. Drag and Drop File Handlers
   dropZone.addEventListener('click', () => {
     if (!selectedFile) fileInput.click();
@@ -139,7 +159,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (!response.ok) {
-        const errData = await response.json();
+        const errData = await response.json().catch(() => ({ detail: 'Failed to complete analysis.' }));
+        const status = response.status;
+        if (status === 429) {
+          throw new Error('⏳ API quota reached. The free Gemini AI limit was hit. Please wait a few minutes and try again.');
+        }
         throw new Error(errData.detail || 'Failed to complete analysis.');
       }
 
@@ -148,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (error) {
       console.error(error);
-      alert(`Error: ${error.message}`);
+      showError(error.message);
     } finally {
       // Clear Loading State
       submitBtn.disabled = false;
