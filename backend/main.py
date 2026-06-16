@@ -5,19 +5,13 @@ from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pypdf import PdfReader
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 
 # Load environment variables relative to the main.py directory
 base_dir = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(dotenv_path=os.path.join(base_dir, ".env"))
-
-# Configure Gemini API on startup if key exists
-api_key = os.getenv("GEMINI_API_KEY")
-if api_key:
-    genai.configure(api_key=api_key)
-else:
-    print("WARNING: GEMINI_API_KEY is not set on startup. Ensure it is configured in backend/.env")
 
 app = FastAPI(title="AI Resume Matcher API", version="1.0.0")
 
@@ -61,12 +55,10 @@ async def analyze_resume(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to read PDF file: {str(e)}")
 
-    # Call Gemini API (Retrieve and configure dynamically)
+    # Get Gemini API key from environment
     current_key = os.getenv("GEMINI_API_KEY")
     if not current_key:
-        raise HTTPException(status_code=500, detail="Gemini API key is not configured. Please set GEMINI_API_KEY on the backend.")
-    
-    genai.configure(api_key=current_key)
+        raise HTTPException(status_code=500, detail="Gemini API key is not configured. Please set GEMINI_API_KEY in environment variables.")
 
     prompt = f"""
 You are an expert HR Manager and Technical Recruiter with years of experience matching candidate resumes to job descriptions.
@@ -114,11 +106,14 @@ JSON Schema:
 """
 
     try:
-        # We use gemini-3.5-flash as it is extremely fast and effective for JSON-based resume analysis
-        model = genai.GenerativeModel('gemini-3.5-flash')
-        response = model.generate_content(
-            prompt,
-            generation_config={"response_mime_type": "application/json"}
+        # Use the new google-genai SDK
+        client = genai.Client(api_key=current_key)
+        response = client.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json"
+            )
         )
         
         # Parse the JSON response
