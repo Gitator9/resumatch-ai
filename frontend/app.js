@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Dynamically select backend API URL based on environment
       const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:8000/api/analyze'
-        : 'https://your-deployed-backend.onrender.com/api/analyze'; // <-- Replace with your production backend URL
+        : '/api/analyze'; // Relative path works on unified Vercel deployment
 
       const response = await fetch(API_URL, {
         method: 'POST',
